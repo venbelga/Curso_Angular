@@ -1,0 +1,11 @@
+/* Estilos para alinhar botões de ação na tabela */
+.acoes {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.acoes button {
+	min-width: 0; /* evita que o botão expanda para largura completa */
+}
+
