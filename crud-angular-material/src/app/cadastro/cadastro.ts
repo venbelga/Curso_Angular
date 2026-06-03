@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatCardModule } from '@angular/material/card';
 import { FormsModule } from '@angular/forms';
@@ -9,6 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { Cliente } from './cliente';
 import { ClienteService } from '../cliente.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-cadastro',
@@ -18,13 +20,17 @@ import { ActivatedRoute, Router } from '@angular/router';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    MatButtonModule],
+    MatButtonModule,
+    NgxMaskDirective
+  ],
+  providers: [provideNgxMask()],
   templateUrl: './cadastro.html',
   styleUrl: './cadastro.scss',
 })
 export class Cadastro implements OnInit {
   cliente: Cliente = Cliente.newCliente();
   atualizando: boolean = false;
+  snackBar: MatSnackBar = inject(MatSnackBar);
 
   constructor(
     private clienteService: ClienteService,
@@ -50,16 +56,24 @@ export class Cadastro implements OnInit {
 
   salvar() {
     this.clienteService.salvar(this.cliente);
+    this.openSnackBar('Cliente salvo com sucesso!');
     this.router.navigate(['/cadastro'], { queryParams: { id: this.cliente.id } });
   }
 
   atualizar() {
     this.clienteService.atualizar(this.cliente);
+    this.openSnackBar('Cliente atualizado com sucesso!');
   }
 
   limpar() {
     this.cliente = Cliente.newCliente();
     this.atualizando = false;
     this.router.navigate(['/cadastro']);
+  }
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message, 'Ok', {
+      duration: 3000,
+    });
   }
 }
